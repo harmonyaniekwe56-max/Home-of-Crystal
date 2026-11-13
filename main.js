@@ -362,27 +362,6 @@ function updateMonsters(time) {
 }
 
 
-function updateMonsters(time) {
-
-    monsters.forEach(monster => {
-
-        const angle = time * 0.35 + monster.phase;
-
-        monster.model.position.x =
-            monster.centerX + Math.cos(angle) * 4;
-
-        monster.model.position.z =
-            monster.centerZ + Math.sin(angle) * 4;
-
-        // Gentle monster movement
-        monster.model.position.y =
-            Math.abs(Math.sin(time * 2 + monster.phase)) * 0.15;
-
-        monster.model.rotation.y =
-            -angle;
-    });
-}
-
 // ==================================
 // 7. CREATE THE BOY CHARACTER
 // ==================================
