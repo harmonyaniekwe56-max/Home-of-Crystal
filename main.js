@@ -606,11 +606,11 @@ function movePlayer() {
     }
 
     player.position.x = THREE.MathUtils.clamp(
-        player.position.x, -1600, 1600
+        player.position.x, -480, 480
     );
 
     player.position.z = THREE.MathUtils.clamp(
-        player.position.z, -1400, 1400
+        player.position.z, -480, 480
     );
 }
 
