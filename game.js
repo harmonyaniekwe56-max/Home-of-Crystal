@@ -9,7 +9,8 @@ const player = {
     x: 400,
     y: 225,
     size: 18,
-    speed: 3
+    speed: 3,
+    direction: "down"
 };
 
 const keys = {};
