@@ -491,6 +491,7 @@ function updateCamera() {
 
 const clock = new THREE.Clock();
 
+
 function animate() {
 
     requestAnimationFrame(animate);
@@ -499,13 +500,41 @@ function animate() {
 
     movePlayer();
 
-    // Make crystals float and rotate
+    // Animate walking and running
+    if (isMoving) {
+
+        const speed = keys["shift"] ? 13 : 8;
+        const swing = Math.sin(time * speed) * 0.55;
+
+        legs[0].rotation.x = swing;
+        legs[1].rotation.x = -swing;
+
+        arms[0].rotation.x = -swing * 0.8;
+        arms[1].rotation.x = swing * 0.8;
+
+    } else {
+
+        // Return limbs to normal when standing
+        legs.forEach(leg => {
+            leg.rotation.x = THREE.MathUtils.lerp(
+                leg.rotation.x, 0, 0.15
+            );
+        });
+
+        arms.forEach(arm => {
+            arm.rotation.x = THREE.MathUtils.lerp(
+                arm.rotation.x, 0, 0.15
+            );
+        });
+    }
+
+    // Diamonds gently float and rotate
     crystals.forEach((crystal, index) => {
 
-        crystal.rotation.y += 0.02;
+        crystal.rotation.y += 0.015;
 
         crystal.position.y =
-            1.3 + Math.sin(time * 2 + index) * 0.2;
+            1.1 + Math.sin(time * 1.5 + index) * 0.12;
     });
 
     collectCrystals();
@@ -514,22 +543,3 @@ function animate() {
 
     renderer.render(scene, camera);
 }
-
-animate();
-
-// ==================================
-// 14. SCREEN RESIZING
-// ==================================
-
-window.addEventListener("resize", () => {
-
-    camera.aspect =
-        window.innerWidth / window.innerHeight;
-
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
-});
