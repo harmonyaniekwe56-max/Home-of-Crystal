@@ -4,29 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Home of Crystal</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
     <main class="game-container">
-
         <h1>HOME OF CRYSTAL</h1>
 
-        <p class="subtitle">
-            A magical adventure awaits...
+        <div class="game-info">
+            <span>💎 Crystals: <span id="score">0</span></span>
+            <span>Explore the magical world!</span>
+        </div>
+
+        <canvas id="gameCanvas" width="800" height="450"></canvas>
+
+        <p class="instructions">
+            Move using WASD or the arrow keys.
+            Collect the glowing crystals!
         </p>
-
-        <button id="startButton">
-            START GAME
-        </button>
-
     </main>
 
     <script src="game.js"></script>
-
 </body>
 </html>
+
