@@ -9,21 +9,16 @@
 </head>
 <body>
 
-    <main class="game-container">
-        <h1>HOME OF CRYSTAL</h1>
+    <div class="game-info">
+        <h1>💎 HOME OF CRYSTAL</h1>
+        <span>Crystals: <span id="score">0</span></span>
+    </div>
 
-        <div class="game-info">
-            <span>💎 Crystals: <span id="score">0</span></span>
-            <span>Explore the magical world!</span>
-        </div>
+    <canvas id="gameCanvas"></canvas>
 
-        <canvas id="gameCanvas" width="800" height="450"></canvas>
-
-        <p class="instructions">
-            Move using WASD or the arrow keys.
-            Collect the glowing crystals!
-        </p>
-    </main>
+    <p class="instructions">
+        Move using WASD or arrow keys. Collect the crystals!
+    </p>
 
     <script src="game.js"></script>
 </body>
