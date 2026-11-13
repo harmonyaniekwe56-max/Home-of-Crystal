@@ -541,15 +541,14 @@ function updateCamera() {
 // 13. ANIMATION LOOP
 // ==================================
 
-const clock = new THREE.Clock();
-
+const timer = new THREE.Timer();
 
 function animate() {
 
     requestAnimationFrame(animate);
 
-    const time = clock.getElapsedTime();
-
+timer.update();
+const time = timer.getElapsed();
     movePlayer();
 
     // Animate walking and running
