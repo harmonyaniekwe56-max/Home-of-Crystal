@@ -53,7 +53,7 @@ scene.add(moonLight);
 // 3. FOREST GROUND
 // ==================================
 
-const groundGeometry = new THREE.PlaneGeometry(200, 200);
+const groundGeometry = new THREE.PlaneGeometry(2000, 4000);
 
 const groundMaterial = new THREE.MeshStandardMaterial({
     color: "#31583D",
