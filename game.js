@@ -42,57 +42,66 @@ document.addEventListener("keyup", (event) => {
     keys[event.key.toLowerCase()] = false;
 });
 
+
 function drawWorld() {
+    // Fill the entire screen with grass
     ctx.fillStyle = "#285B42";
-    ctx.fillRect(0, 0, 800, 450);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Magical pathway
     ctx.fillStyle = "#542D78";
-    ctx.fillRect(0, 195, 800, 65);
+    ctx.fillRect(
+        0,
+        canvas.height / 2 - 32,
+        canvas.width,
+        65
+    );
 
     // Decorative magical plants
-    for (let i = 0; i < 35; i++) {
-        const x = (i * 97) % 790;
-        const y = (i * 61) % 440;
+    for (let i = 0; i < 100; i++) {
+        const x = (i * 97) % canvas.width;
+        const y = (i * 61) % canvas.height;
 
         ctx.fillStyle = "#80B879";
         ctx.fillRect(x, y, 5, 5);
     }
 
-// Magical glowing flowers
-for (let i = 0; i < 18; i++) {
-    const x = (i * 113 + 45) % 780;
-    const y = (i * 79 + 30) % 440;
+    // Magical glowing flowers
+    for (let i = 0; i < 35; i++) {
+        const x = (i * 113 + 45) % canvas.width;
+        const y = (i * 79 + 30) % canvas.height;
 
-    // Keep flowers away from the pathway
-    if (y > 185 && y < 270) continue;
+        if (
+            y > canvas.height / 2 - 40 &&
+            y < canvas.height / 2 + 40
+        ) continue;
 
-    ctx.save();
+        ctx.save();
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#D98BFF";
 
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "#D98BFF";
+        ctx.fillStyle = i % 2 === 0 ? "#D98BFF" : "#F3D78B";
 
-    // Flower petals
-    ctx.fillStyle = i % 2 === 0 ? "#D98BFF" : "#F3D78B";
+        ctx.beginPath();
+        ctx.arc(x, y - 5, 5, 0, Math.PI * 2);
+        ctx.arc(x, y + 5, 5, 0, Math.PI * 2);
+        ctx.arc(x - 5, y, 5, 0, Math.PI * 2);
+        ctx.arc(x + 5, y, 5, 0, Math.PI * 2);
+        ctx.fill();
 
-    ctx.beginPath();
-    ctx.arc(x, y - 5, 5, 0, Math.PI * 2);
-    ctx.arc(x, y + 5, 5, 0, Math.PI * 2);
-    ctx.arc(x - 5, y, 5, 0, Math.PI * 2);
-    ctx.arc(x + 5, y, 5, 0, Math.PI * 2);
-    ctx.fill();
+        ctx.fillStyle = "#FFF4B0";
+        ctx.fillRect(x - 2, y - 2, 4, 4);
 
-    // Flower centre
-    ctx.fillStyle = "#FFF4B0";
-    ctx.fillRect(x - 2, y - 2, 4, 4);
-
-    ctx.restore();
-}
+        ctx.restore();
+    }
 
     // Trees
-    for (let i = 0; i < 12; i++) {
-        const x = (i * 137 + 30) % 780;
-        const y = i % 2 === 0 ? 55 : 390;
+    for (let i = 0; i < 25; i++) {
+        const x = (i * 137 + 30) % canvas.width;
+
+        const y = i % 2 === 0
+            ? 55 + (i * 13) % Math.max(1, canvas.height / 3)
+            : canvas.height - 55 - (i * 17) % Math.max(1, canvas.height / 3);
 
         ctx.fillStyle = "#10271F";
         ctx.beginPath();
@@ -195,7 +204,6 @@ function drawPlayer() {
     ctx.restore();
 }
 
-
 function movePlayer() {
     if (keys["arrowup"] || keys["w"]) {
         player.y -= player.speed;
@@ -217,9 +225,16 @@ function movePlayer() {
         player.direction = "right";
     }
 
-    // Keep player inside the game world
-    player.x = Math.max(22, Math.min(778, player.x));
-    player.y = Math.max(22, Math.min(428, player.y));
+    // Keep player inside the full-screen game world
+    player.x = Math.max(
+        22,
+        Math.min(canvas.width - 22, player.x)
+    );
+
+    player.y = Math.max(
+        28,
+        Math.min(canvas.height - 28, player.y)
+    );
 }
 
 
