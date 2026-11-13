@@ -593,5 +593,20 @@ const time = timer.getElapsed();
 
     renderer.render(scene, camera);
 }
+// ==================================
+// 14. SCREEN RESIZING
+// ==================================
+
+window.addEventListener("resize", () => {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+});
 // START THE GAME
 animate();
