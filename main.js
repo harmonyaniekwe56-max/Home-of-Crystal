@@ -327,30 +327,6 @@ const crystalPositions = [
 function createCrystal(x, z) {
 
     const crystal = new THREE.Mesh(
-        new THREE.OctahedronGeometry(0.65),
-        new THREE.MeshStandardMaterial({
-            color: "#A98AD8",
-            emissive: "#7436A8",
-            emissiveIntensity: 0.8,
-            metalness: 0.5,
-            roughness: 0.25
-        })
-    );
-
-    crystal.position.set(x, 1.1, z);
-    crystal.castShadow = true;
-
-    scene.add(crystal);
-    crystals.push(crystal);
-}
-
-crystalPositions.forEach(position => {
-    createCrystal(position[0], position[1]);
-});
-
-function createCrystal(x, z) {
-
-    const crystal = new THREE.Mesh(
         new THREE.OctahedronGeometry(0.8),
         new THREE.MeshStandardMaterial({
             color: "#B78AE0",
