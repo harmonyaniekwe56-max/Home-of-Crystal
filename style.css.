@@ -7,13 +7,12 @@
 
 body {
     min-height: 100vh;
+    width: 100%;
+    margin: 0;
     background: #241638;
     color: #F3D78B;
     font-family: Georgia, serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    padding: 0;
 }
 
 .game-container {
