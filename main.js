@@ -590,7 +590,7 @@ function animate() {
     });
 
     collectCrystals();
-
+   updateMonsters(time);
     updateCamera();
 
     renderer.render(scene, camera);
