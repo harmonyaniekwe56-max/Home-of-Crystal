@@ -184,6 +184,60 @@ for (let i = 0; i < 35; i++) {
     scene.add(rock);
 }
 
+ // ==================================
+ // 6B. MYSTERIOUS CAVES
+ // ==================================
+
+function createCave(x, z) {
+
+    const cave = new THREE.Group();
+
+    // Cave rock structure
+    const rockMaterial = new THREE.MeshStandardMaterial({
+        color: "#34383B",
+        roughness: 1
+    });
+
+    const caveRock = new THREE.Mesh(
+        new THREE.DodecahedronGeometry(5, 1),
+        rockMaterial
+    );
+
+    caveRock.scale.set(1.5, 1, 1);
+    caveRock.position.y = 2.5;
+    cave.add(caveRock);
+
+    // Dark entrance
+    const entrance = new THREE.Mesh(
+        new THREE.CircleGeometry(2.2, 24),
+        new THREE.MeshBasicMaterial({
+            color: "#080B10",
+            side: THREE.DoubleSide
+        })
+    );
+
+    entrance.position.set(0, 1.5, 4.5);
+    cave.add(entrance);
+
+    // Purple light inside the cave
+    const caveLight = new THREE.PointLight(
+        "#9B55FF",
+        4,
+        15
+    );
+
+    caveLight.position.set(0, 2, 0);
+    cave.add(caveLight);
+
+    cave.position.set(x, 0, z);
+
+    scene.add(cave);
+}
+
+// Place caves away from the main path
+createCave(24, -38);
+createCave(-35, -70);
+
 // ==================================
 // 7. CREATE THE BOY CHARACTER
 // ==================================
