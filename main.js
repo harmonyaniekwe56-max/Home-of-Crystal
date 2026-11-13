@@ -277,22 +277,45 @@ player.position.set(0, 0, 5);
 
 scene.add(player);
 
-// ==================================
-// 8. CREATE GLOWING CRYSTALS
-// ==================================
+
+ // ==================================
+ // 8. CREATE HIDDEN DIAMONDS
+ // ==================================
 
 const crystals = [];
 
+// Five diamonds hidden away from the main path
 const crystalPositions = [
-    [-5, -8],
-    [6, -15],
-    [-8, -24],
-    [9, -32],
-    [-6, -43],
-    [7, -52],
-    [-10, -62],
-    [11, -72]
+    [-19, -17],
+    [25, -29],
+    [-32, -46],
+    [31, -64],
+    [-43, -79]
 ];
+
+function createCrystal(x, z) {
+
+    const crystal = new THREE.Mesh(
+        new THREE.OctahedronGeometry(0.65),
+        new THREE.MeshStandardMaterial({
+            color: "#A98AD8",
+            emissive: "#7436A8",
+            emissiveIntensity: 0.8,
+            metalness: 0.5,
+            roughness: 0.25
+        })
+    );
+
+    crystal.position.set(x, 1.1, z);
+    crystal.castShadow = true;
+
+    scene.add(crystal);
+    crystals.push(crystal);
+}
+
+crystalPositions.forEach(position => {
+    createCrystal(position[0], position[1]);
+});
 
 function createCrystal(x, z) {
 
