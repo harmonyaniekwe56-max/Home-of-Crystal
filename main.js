@@ -593,3 +593,5 @@ const time = timer.getElapsed();
 
     renderer.render(scene, camera);
 }
+// START THE GAME
+animate();
