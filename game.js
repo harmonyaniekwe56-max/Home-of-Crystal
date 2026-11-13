@@ -86,25 +86,76 @@ function drawCrystal(x, y) {
 }
 
 function drawPlayer() {
-    // Character body
-    ctx.fillStyle = "#F3D78B";
-    ctx.beginPath();
-    ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
-    ctx.fill();
+    const x = Math.round(player.x);
+    const y = Math.round(player.y);
 
-    // Character face
-    ctx.fillStyle = "#241638";
-    ctx.beginPath();
-    ctx.arc(player.x - 6, player.y - 3, 2, 0, Math.PI * 2);
-    ctx.arc(player.x + 6, player.y - 3, 2, 0, Math.PI * 2);
-    ctx.fill();
+    const moving =
+        keys["w"] || keys["a"] || keys["s"] || keys["d"] ||
+        keys["arrowup"] || keys["arrowdown"] ||
+        keys["arrowleft"] || keys["arrowright"];
+
+    const step = moving ? Math.floor(Date.now() / 180) % 2 : 0;
+
+    ctx.save();
 
     // Magical glow
-    ctx.strokeStyle = "#B78AE0";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(player.x, player.y, 23, 0, Math.PI * 2);
-    ctx.stroke();
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#B78AE0";
+
+    // Hair
+    ctx.fillStyle = "#51301F";
+    ctx.fillRect(x - 10, y - 13, 20, 8);
+    ctx.fillRect(x - 13, y - 7, 4, 12);
+
+    // Face
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#E9AE82";
+    ctx.fillRect(x - 9, y - 7, 18, 12);
+
+    // Purple outfit
+    ctx.fillStyle = "#713DA5";
+    ctx.fillRect(x - 12, y + 5, 24, 13);
+
+    // Golden belt
+    ctx.fillStyle = "#F3D78B";
+    ctx.fillRect(x - 12, y + 9, 24, 3);
+
+    // Arms
+    ctx.fillStyle = "#E9AE82";
+    ctx.fillRect(x - 16, y + 6, 4, 9);
+    ctx.fillRect(x + 12, y + 6, 4, 9);
+
+    // Eyes
+    if (player.direction !== "up") {
+        ctx.fillStyle = "#241638";
+
+        if (player.direction === "left") {
+            ctx.fillRect(x - 7, y - 3, 3, 3);
+        } else if (player.direction === "right") {
+            ctx.fillRect(x + 4, y - 3, 3, 3);
+        } else {
+            ctx.fillRect(x - 5, y - 3, 3, 3);
+            ctx.fillRect(x + 3, y - 3, 3, 3);
+        }
+    }
+
+    // Walking legs
+    ctx.fillStyle = "#302047";
+
+    if (step === 0) {
+        ctx.fillRect(x - 9, y + 18, 7, 7);
+        ctx.fillRect(x + 2, y + 18, 7, 7);
+    } else {
+        ctx.fillRect(x - 10, y + 18, 7, 7);
+        ctx.fillRect(x + 4, y + 18, 7, 7);
+    }
+
+    // Golden shoes
+    ctx.fillStyle = "#F3D78B";
+    ctx.fillRect(x - 10, y + 23, 8, 3);
+    ctx.fillRect(x + 3, y + 23, 8, 3);
+
+    ctx.restore();
 }
 
 function movePlayer() {
