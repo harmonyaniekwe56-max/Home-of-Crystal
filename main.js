@@ -589,7 +589,6 @@ const time = timer.getElapsed();
     });
 
     collectCrystals();
-   updateMonsters(time);
     updateCamera();
 
     renderer.render(scene, camera);
