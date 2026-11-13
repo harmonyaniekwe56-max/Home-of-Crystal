@@ -393,11 +393,14 @@ window.addEventListener("keyup", event => {
     keys[event.key.toLowerCase()] = false;
 });
 
+
 // ==================================
 // 10. PLAYER MOVEMENT
 // ==================================
 
 let score = 0;
+let isMoving = false;
+let movementSpeed = 0.12;
 
 function movePlayer() {
 
@@ -409,39 +412,32 @@ function movePlayer() {
     if (keys["a"] || keys["arrowleft"]) dx -= 1;
     if (keys["d"] || keys["arrowright"]) dx += 1;
 
-    const moving = dx !== 0 || dz !== 0;
+    isMoving = dx !== 0 || dz !== 0;
 
-    if (moving) {
+    // Hold SHIFT to run
+    movementSpeed = keys["shift"] ? 0.20 : 0.12;
+
+    if (isMoving) {
 
         const length = Math.sqrt(dx * dx + dz * dz);
 
         dx /= length;
         dz /= length;
 
-        player.position.x += dx * 0.12;
-        player.position.z += dz * 0.12;
+        player.position.x += dx * movementSpeed;
+        player.position.z += dz * movementSpeed;
 
-        // Turn character towards movement
         player.rotation.y = Math.atan2(dx, dz);
     }
 
-    // Keep character inside the forest
     player.position.x = THREE.MathUtils.clamp(
-        player.position.x,
-        -85,
-        85
+        player.position.x, -85, 85
     );
 
     player.position.z = THREE.MathUtils.clamp(
-        player.position.z,
-        -85,
-        85
+        player.position.z, -85, 85
     );
 }
-
-// ==================================
-// 11. COLLECT CRYSTALS
-// ==================================
 
 function collectCrystals() {
 
