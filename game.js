@@ -158,26 +158,33 @@ function drawPlayer() {
     ctx.restore();
 }
 
+
 function movePlayer() {
     if (keys["arrowup"] || keys["w"]) {
         player.y -= player.speed;
+        player.direction = "up";
     }
 
     if (keys["arrowdown"] || keys["s"]) {
         player.y += player.speed;
+        player.direction = "down";
     }
 
     if (keys["arrowleft"] || keys["a"]) {
         player.x -= player.speed;
+        player.direction = "left";
     }
 
     if (keys["arrowright"] || keys["d"]) {
         player.x += player.speed;
+        player.direction = "right";
     }
 
+    // Keep player inside the game world
     player.x = Math.max(22, Math.min(778, player.x));
     player.y = Math.max(22, Math.min(428, player.y));
 }
+
 
 function collectCrystals() {
     crystals.forEach(crystal => {
