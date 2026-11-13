@@ -52,6 +52,36 @@ function drawWorld() {
         ctx.fillRect(x, y, 5, 5);
     }
 
+// Magical glowing flowers
+for (let i = 0; i < 18; i++) {
+    const x = (i * 113 + 45) % 780;
+    const y = (i * 79 + 30) % 440;
+
+    // Keep flowers away from the pathway
+    if (y > 185 && y < 270) continue;
+
+    ctx.save();
+
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#D98BFF";
+
+    // Flower petals
+    ctx.fillStyle = i % 2 === 0 ? "#D98BFF" : "#F3D78B";
+
+    ctx.beginPath();
+    ctx.arc(x, y - 5, 5, 0, Math.PI * 2);
+    ctx.arc(x, y + 5, 5, 0, Math.PI * 2);
+    ctx.arc(x - 5, y, 5, 0, Math.PI * 2);
+    ctx.arc(x + 5, y, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Flower centre
+    ctx.fillStyle = "#FFF4B0";
+    ctx.fillRect(x - 2, y - 2, 4, 4);
+
+    ctx.restore();
+}
+
     // Trees
     for (let i = 0; i < 12; i++) {
         const x = (i * 137 + 30) % 780;
