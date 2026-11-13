@@ -1,4 +1,5 @@
 
+
 * {
     margin: 0;
     padding: 0;
@@ -6,65 +7,45 @@
 }
 
 body {
-    min-height: 100vh;
     width: 100%;
-    margin: 0;
+    height: 100vh;
+    overflow: hidden;
     background: #241638;
-    color: #F3D78B;
     font-family: Georgia, serif;
-    padding: 0;
-}
-
-.game-container {
-    width: 100%;
-    max-width: none;
-    min-height: 100vh;
-    padding: 20px;
-    text-align: center;
-    background: #542D78;
-    border: 3px solid #F3D78B;
-    border-radius: 18px;
-    box-shadow: 0 0 30px #B78AE0;
-}
-
-h1 {
-    font-size: clamp(24px, 5vw, 42px);
-    margin-bottom: 20px;
-    letter-spacing: 3px;
     color: #F3D78B;
 }
 
 .game-info {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    right: 20px;
+    z-index: 2;
+
     display: flex;
     justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-    font-size: 15px;
+    align-items: center;
+
+    text-shadow: 0 0 10px #B78AE0;
+}
+
+h1 {
+    font-size: 24px;
 }
 
 canvas {
     display: block;
     width: 100%;
-    height: auto;
-    border: 3px solid #F3D78B;
-    border-radius: 10px;
+    height: 100%;
     background: #285B42;
 }
 
 .instructions {
-    margin-top: 15px;
-    color: #F3D78B;
-    font-size: 15px;
-}
-
-@media (max-width: 500px) {
-    .game-container {
-        padding: 12px;
-    }
-
-    .game-info {
-        font-size: 12px;
-    }
+    position: absolute;
+    bottom: 15px;
+    left: 20px;
+    z-index: 2;
+    font-size: 14px;
+    text-shadow: 0 0 10px #B78AE0;
 }
 
