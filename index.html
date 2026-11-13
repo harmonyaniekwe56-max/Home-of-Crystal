@@ -4,23 +4,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home of Crystal</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Home of Crystal - 3D Adventure</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: #101827;
+            font-family: Georgia, serif;
+        }
+
+        #gameCanvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .game-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            color: #F3D78B;
+            text-shadow: 0 2px 8px black;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: clamp(17px, 3vw, 27px);
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            background: #241638BB;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+    </style>
 </head>
+
 <body>
 
     <div class="game-info">
         <h1>💎 HOME OF CRYSTAL</h1>
-        <span>Crystals: <span id="score">0</span></span>
+        <h3>Crystals: <span id="score">0</span></h3>
     </div>
 
     <canvas id="gameCanvas"></canvas>
 
-    <p class="instructions">
-        Move using WASD or arrow keys. Collect the crystals!
-    </p>
+    <div class="instructions">
+        WASD / Arrow Keys: Move<br>
+        Explore the enchanted forest!
+    </div>
 
-    <script src="game.js"></script>
+    <script type="module" src="./main.js"></script>
+
 </body>
 </html>
 
