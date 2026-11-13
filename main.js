@@ -238,6 +238,129 @@ function createCave(x, z) {
 createCave(24, -38);
 createCave(-35, -70);
 
+// ==================================
+// 6C. MONSTERS THAT CHASE THE PLAYER
+// ==================================
+
+const monsters = [];
+
+function createMonster(x, z) {
+
+    const monster = new THREE.Group();
+
+    const monsterMaterial = new THREE.MeshStandardMaterial({
+        color: "#253C35",
+        roughness: 0.8
+    });
+
+    const eyeMaterial = new THREE.MeshStandardMaterial({
+        color: "#FF3030",
+        emissive: "#FF0000",
+        emissiveIntensity: 2
+    });
+
+    // Body
+    const body = new THREE.Mesh(
+        new THREE.SphereGeometry(0.9, 12, 12),
+        monsterMaterial
+    );
+
+    body.position.y = 1.1;
+    monster.add(body);
+
+    // Head
+    const head = new THREE.Mesh(
+        new THREE.SphereGeometry(0.65, 12, 12),
+        monsterMaterial
+    );
+
+    head.position.set(0, 2, 0.35);
+    monster.add(head);
+
+    // Glowing eyes
+    for (const side of [-1, 1]) {
+
+        const eye = new THREE.Mesh(
+            new THREE.SphereGeometry(0.12, 8, 8),
+            eyeMaterial
+        );
+
+        eye.position.set(side * 0.25, 2.1, 0.88);
+        monster.add(eye);
+    }
+
+    // Arms
+    for (const side of [-1, 1]) {
+
+        const arm = new THREE.Mesh(
+            new THREE.CapsuleGeometry(0.16, 0.7, 4, 8),
+            monsterMaterial
+        );
+
+        arm.position.set(side * 0.9, 1.1, 0);
+        arm.rotation.z = side * 0.5;
+        monster.add(arm);
+    }
+
+    monster.position.set(x, 0, z);
+    scene.add(monster);
+
+    monsters.push({
+        model: monster,
+        centerX: x,
+        centerZ: z,
+        phase: Math.random() * Math.PI * 2
+    });
+}
+
+// Create two forest monsters
+createMonster(24, -32);
+createMonster(-35, -64);
+
+// ==================================
+// MONSTER AI
+// ==================================
+
+function updateMonsters(time) {
+
+    monsters.forEach(monster => {
+
+        const dx = player.position.x - monster.model.position.x;
+        const dz = player.position.z - monster.model.position.z;
+
+        const distance = Math.sqrt(dx * dx + dz * dz);
+
+        if (distance < 14 && distance > 2.5) {
+
+            // Chase the player
+            monster.model.position.x +=
+                (dx / distance) * 0.035;
+
+            monster.model.position.z +=
+                (dz / distance) * 0.035;
+
+            monster.model.rotation.y = Math.atan2(dx, dz);
+
+        } else if (distance >= 14) {
+
+            // Patrol around their original location
+            const angle = time * 0.35 + monster.phase;
+
+            monster.model.position.x =
+                monster.centerX + Math.cos(angle) * 4;
+
+            monster.model.position.z =
+                monster.centerZ + Math.sin(angle) * 4;
+
+            monster.model.rotation.y = -angle;
+        }
+
+        // Gentle floating movement
+        monster.model.position.y =
+            Math.abs(Math.sin(time * 2 + monster.phase)) * 0.15;
+    });
+}
+
 
 function updateMonsters(time) {
 
