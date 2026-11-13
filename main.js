@@ -244,19 +244,50 @@ hair.position.y = 2.5;
 
 player.add(hair);
 
-// Legs
+
+// Animated legs
+const legs = [];
+const arms = [];
 
 for (const side of [-1, 1]) {
+
+    const legPivot = new THREE.Group();
+
+    legPivot.position.set(side * 0.2, 0.72, 0);
 
     const leg = new THREE.Mesh(
         new THREE.CapsuleGeometry(0.13, 0.45, 4, 8),
         darkMaterial
     );
 
-    leg.position.set(side * 0.2, 0.48, 0);
+    leg.position.y = -0.28;
     leg.castShadow = true;
 
-    player.add(leg);
+    legPivot.add(leg);
+    player.add(legPivot);
+
+    legs.push(legPivot);
+}
+
+// Animated arms
+for (const side of [-1, 1]) {
+
+    const armPivot = new THREE.Group();
+
+    armPivot.position.set(side * 0.48, 1.75, 0);
+
+    const arm = new THREE.Mesh(
+        new THREE.CapsuleGeometry(0.12, 0.42, 4, 8),
+        skinMaterial
+    );
+
+    arm.position.y = -0.27;
+    arm.castShadow = true;
+
+    armPivot.add(arm);
+    player.add(armPivot);
+
+    arms.push(armPivot);
 }
 
 // Golden belt
