@@ -1066,63 +1066,6 @@ regions.forEach((region, index) => createChest(region, index));
         const pivot = new THREE.Group();
         pivot.position.set(side * 0.23, 1.05, 0);
 
-        const leg = new THREE.Mesh(
-            new THREE.CapsuleGeometry(0.2, 0.65, 6, 10),
-            skinMaterial
-        );
-
-        leg.position.y = -0.38;
-        leg.castShadow = true;
-        pivot.add(leg);
-
-        // Torn trousers
-        const trousers = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.2, 0.19, 0.42, 8),
-            clothMaterial
-        );
-
-        trousers.position.y = -0.12;
-        pivot.add(trousers);
-
-        // Feet
-        const foot = new THREE.Mesh(
-            new THREE.BoxGeometry(0.3, 0.18, 0.42),
-            darkMaterial
-        );
-
-        foot.position.set(0, -0.78, 0.08);
-        pivot.add(foot);
-
-        monster.add(pivot);
-        legPivots.push(pivot);
-    }
-
-    // POSITION AND SIZE
-    monster.position.set(region.x + 20, 0, region.z - 8);
-    monster.scale.setScalar(1.15);
-
-    monster.lookAt(player.position.x, 0, player.position.z);
-
-    scene.add(monster);
-
-    monsters.push({
-        model: monster,
-        region,
-        health: 20,
-        maxHealth: 20,
-        attackCooldown: 0,
-        alive: true,
-        index,
-
-        // New animation parts
-        armPivots,
-        legPivots,
-        isAttacking: false,
-        attackAnimation: 0
-    });
-}
-
-regions.forEach((region, index) => createMonster(region, index));
 
 // ==========================================
 // 10. SONIC POWER
