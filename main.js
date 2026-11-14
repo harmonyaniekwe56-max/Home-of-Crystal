@@ -1126,7 +1126,6 @@ regions.forEach((region, index) => createChest(region, index));
 
 regions.forEach((region, index) => createMonster(region, index));
 
-
 // ==========================================
 // 10. SONIC POWER
 // ==========================================
