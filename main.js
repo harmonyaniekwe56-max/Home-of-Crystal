@@ -173,7 +173,38 @@ regions.forEach((region, index) => {
         scene.add(rock);
     }
 });
+// PATHWAYS CONNECTING THE FIVE REGIONS
+function createPath(x1, z1, x2, z2) {
+    const dx = x2 - x1;
+    const dz = z2 - z1;
 
+    const distance = Math.sqrt(dx * dx + dz * dz);
+
+    const path = new THREE.Mesh(
+        new THREE.BoxGeometry(14, 0.25, distance),
+        new THREE.MeshStandardMaterial({
+            color: 0x77716b,
+            roughness: 0.9
+        })
+    );
+
+    path.position.set(
+        (x1 + x2) / 2,
+        0.12,
+        (z1 + z2) / 2
+    );
+
+    path.rotation.y = Math.atan2(dx, dz);
+    path.receiveShadow = true;
+
+    scene.add(path);
+}
+
+// Connect each region to the Forgotten Kingdom
+createPath(-250, -250, 0, 0);
+createPath(250, -250, 0, 0);
+createPath(-250, 250, 0, 0);
+createPath(250, 250, 0, 0);
 // ==========================================
 // 6. TREES AND WORLD DECORATION
 // ==========================================
