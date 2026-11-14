@@ -1318,60 +1318,50 @@ function updateMonsters(delta) {
 
         let distance = Math.sqrt(dx * dx + dz * dz);
 
+        // Update the zombie's 3D animation
+        if (monster.mixer) {
+            monster.mixer.update(delta);
+        }
+
+        // Reduce attack cooldown
         monster.attackCooldown -= delta;
 
-        // Walking animation timer
-        monster.walkTime = (monster.walkTime || 0) + delta;
-
-        // =================================
-        // CHASE THE BOY
-        // =================================
-
-        const chasing = distance < 65 && distance > 3.8;
-
-        if (chasing) {
+        // Chase the boy
+        if (distance < 65 && distance > 4.5) {
 
             const speed = 8 * delta;
 
             model.position.x += (dx / distance) * speed;
             model.position.z += (dz / distance) * speed;
 
+            // Face the boy
             model.rotation.y = Math.atan2(dx, dz);
-
-            // Walking arms
-            monster.armPivots.forEach((arm, i) => {
-                arm.rotation.x =
-                    Math.sin(monster.walkTime * 7 + i * Math.PI) * 0.45;
-            });
-
-            // Walking legs
-            monster.legPivots.forEach((leg, i) => {
-                leg.rotation.x =
-                    Math.sin(monster.walkTime * 7 + i * Math.PI) * 0.55;
-            });
-
-        } else {
-
-            // Return arms and legs to resting position
-            monster.armPivots.forEach(arm => {
-                if (!monster.isAttacking) {
-                    arm.rotation.x = THREE.MathUtils.lerp(
-                        arm.rotation.x, 0, 0.12
-                    );
-                }
-            });
-
-            monster.legPivots.forEach(leg => {
-                leg.rotation.x = THREE.MathUtils.lerp(
-                    leg.rotation.x, 0, 0.12
-                );
-            });
         }
 
-        // Recalculate distance after movement
+        // Attack when close
         dx = player.position.x - model.position.x;
         dz = player.position.z - model.position.z;
+
         distance = Math.sqrt(dx * dx + dz * dz);
+
+        if (distance < 4.5 && monster.attackCooldown <= 0) {
+
+            playerHealth = Math.max(0, playerHealth - 8);
+
+            monster.attackCooldown = 1.5;
+
+            updateHealth();
+
+            showMessage("A ZOMBIE HIT YOU!");
+
+            if (playerHealth <= 0) {
+                finishGame(false);
+            }
+        }
+
+    });
+
+}
 
         // =================================
         // START ZOMBIE ATTACK
