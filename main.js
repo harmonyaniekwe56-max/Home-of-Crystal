@@ -1274,9 +1274,21 @@ function updateRegionDisplay() {
 
 function updateCamera() {
 
-    const offset = new THREE.Vector3(0, 9, 17);
+    // Camera stays behind the boy's facing direction
+    const distanceBehind = 17;
+    const height = 9;
 
-    const target = player.position.clone().add(offset);
+    const direction = new THREE.Vector3(
+        Math.sin(player.rotation.y),
+        0,
+        Math.cos(player.rotation.y)
+    );
+
+    const target = player.position.clone().sub(
+        direction.multiplyScalar(distanceBehind)
+    );
+
+    target.y += height;
 
     camera.position.lerp(target, 0.08);
 
