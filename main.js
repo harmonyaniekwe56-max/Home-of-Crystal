@@ -495,150 +495,329 @@ for (let i = 0; i < 35; i++) {
     );
 }
 
+
 // ==========================================
-// 7. CREATE THE BOY
+// 7. CREATE THE BOY - WHITE AND PURPLE WARRIOR
 // ==========================================
 
 const player = new THREE.Group();
 
+// Character materials
+const boyMaterials = {
+    skin: new THREE.MeshStandardMaterial({
+        color: "#e8bd9e",
+        roughness: 0.85
+    }),
+    hair: new THREE.MeshStandardMaterial({
+        color: "#f4f3ff",
+        roughness: 0.65
+    }),
+    coat: new THREE.MeshStandardMaterial({
+        color: "#eeeaf8",
+        roughness: 0.75
+    }),
+    purple: new THREE.MeshStandardMaterial({
+        color: "#552b91",
+        roughness: 0.55
+    }),
+    dark: new THREE.MeshStandardMaterial({
+        color: "#242033",
+        roughness: 0.8
+    }),
+    silver: new THREE.MeshStandardMaterial({
+        color: "#dce5f2",
+        metalness: 0.85,
+        roughness: 0.2
+    }),
+    gold: new THREE.MeshStandardMaterial({
+        color: "#d6ad54",
+        metalness: 0.75,
+        roughness: 0.3
+    }),
+    eye: new THREE.MeshStandardMaterial({
+        color: "#30204e",
+        roughness: 0.3
+    })
+};
+
 function makePart(geometry, material, x, y, z) {
-
     const part = new THREE.Mesh(geometry, material);
-
     part.position.set(x, y, z);
     part.castShadow = true;
     part.receiveShadow = true;
-
     player.add(part);
-
     return part;
 }
 
-// Torso
+// NECK
 makePart(
-    new THREE.CapsuleGeometry(0.48, 0.85, 8, 16),
-    materials.shirt,
-    0, 1.55, 0
+    new THREE.CylinderGeometry(0.13, 0.15, 0.28, 12),
+    boyMaterials.skin,
+    0, 2.43, 0
 );
 
-// Head
+// BODY - WHITE COAT
 makePart(
-    new THREE.SphereGeometry(0.38, 24, 24),
-    materials.skin,
-    0, 2.65, 0
+    new THREE.CapsuleGeometry(0.43, 0.85, 8, 16),
+    boyMaterials.coat,
+    0, 1.65, 0
 );
 
-// Hair
+// PURPLE INNER SHIRT
 makePart(
-    new THREE.SphereGeometry(0.4, 20, 16),
-    materials.hair,
-    0, 2.84, -0.03
+    new THREE.BoxGeometry(0.34, 0.9, 0.12),
+    boyMaterials.purple,
+    0, 1.68, 0.37
 );
 
-// Hairline adjustment
+// COAT FRONT DETAILS
+for (const side of [-1, 1]) {
+    makePart(
+        new THREE.BoxGeometry(0.08, 0.9, 0.08),
+        boyMaterials.silver,
+        side * 0.29, 1.65, 0.34
+    );
+
+    // Coat tails
+    const tail = makePart(
+        new THREE.BoxGeometry(0.3, 0.85, 0.16),
+        boyMaterials.coat,
+        side * 0.24, 0.85, -0.04
+    );
+    tail.rotation.z = side * -0.08;
+}
+
+// PURPLE COLLAR
 makePart(
-    new THREE.BoxGeometry(0.55, 0.12, 0.12),
-    materials.hair,
-    0, 2.65, 0.31
+    new THREE.BoxGeometry(0.25, 0.22, 0.18),
+    boyMaterials.purple,
+    0, 2.18, 0.29
 );
 
-// Legs
+// HEAD
+makePart(
+    new THREE.SphereGeometry(0.36, 32, 24),
+    boyMaterials.skin,
+    0, 2.72, 0
+);
+
+// EARS
+for (const side of [-1, 1]) {
+    makePart(
+        new THREE.SphereGeometry(0.09, 12, 12),
+        boyMaterials.skin,
+        side * 0.35, 2.7, 0
+    );
+}
+
+// WHITE HAIR
+makePart(
+    new THREE.SphereGeometry(0.39, 24, 20),
+    boyMaterials.hair,
+    0, 2.96, -0.04
+);
+
+// Hair at the sides
+for (const side of [-1, 1]) {
+    const hairSide = makePart(
+        new THREE.SphereGeometry(0.16, 16, 12),
+        boyMaterials.hair,
+        side * 0.29, 2.78, 0.02
+    );
+    hairSide.scale.set(0.8, 1.4, 0.8);
+}
+
+// Hair fringe
+for (let i = 0; i < 5; i++) {
+    const fringe = makePart(
+        new THREE.ConeGeometry(0.13, 0.38, 7),
+        boyMaterials.hair,
+        (i - 2) * 0.12,
+        2.78 + (i % 2) * 0.08,
+        0.29
+    );
+    fringe.rotation.x = -0.25;
+    fringe.rotation.z = (i - 2) * 0.18;
+}
+
+// EYES
+for (const side of [-1, 1]) {
+    makePart(
+        new THREE.SphereGeometry(0.045, 12, 12),
+        boyMaterials.eye,
+        side * 0.13, 2.73, 0.33
+    );
+}
+
+// BELT
+makePart(
+    new THREE.TorusGeometry(0.42, 0.045, 8, 24),
+    boyMaterials.gold,
+    0, 1.22, 0
+).rotation.x = Math.PI / 2;
+
+// BELT BUCKLE
+makePart(
+    new THREE.BoxGeometry(0.17, 0.17, 0.08),
+    boyMaterials.gold,
+    0, 1.22, 0.43
+);
+
+// LEGS
 const legPivots = [];
 
 for (const side of [-1, 1]) {
-
     const pivot = new THREE.Group();
-
     pivot.position.set(side * 0.2, 0.95, 0);
 
     const leg = new THREE.Mesh(
-        new THREE.CapsuleGeometry(0.16, 0.6, 6, 12),
-        materials.trousers
+        new THREE.CapsuleGeometry(0.16, 0.62, 8, 12),
+        boyMaterials.dark
     );
-
     leg.position.y = -0.35;
     leg.castShadow = true;
-
     pivot.add(leg);
 
+    // Boots
     const boot = new THREE.Mesh(
-        new THREE.BoxGeometry(0.32, 0.2, 0.48),
-        materials.boots
+        new THREE.BoxGeometry(0.3, 0.24, 0.48),
+        boyMaterials.dark
     );
-
     boot.position.set(0, -0.72, 0.1);
     boot.castShadow = true;
-
     pivot.add(boot);
+
+    // Silver boot details
+    const bootBand = new THREE.Mesh(
+        new THREE.BoxGeometry(0.31, 0.07, 0.3),
+        boyMaterials.silver
+    );
+    bootBand.position.set(0, -0.62, 0.1);
+    pivot.add(bootBand);
 
     player.add(pivot);
     legPivots.push(pivot);
 }
 
-// Arms
+// ARMS
 const armPivots = [];
 
 for (const side of [-1, 1]) {
-
     const pivot = new THREE.Group();
+    pivot.position.set(side * 0.48, 2.05, 0);
 
-    pivot.position.set(side * 0.52, 2, 0);
-
-    const arm = new THREE.Mesh(
-        new THREE.CapsuleGeometry(0.14, 0.55, 6, 12),
-        materials.shirt
+    const sleeve = new THREE.Mesh(
+        new THREE.CapsuleGeometry(0.15, 0.53, 8, 12),
+        boyMaterials.coat
     );
+    sleeve.position.y = -0.34;
+    sleeve.castShadow = true;
+    pivot.add(sleeve);
 
-    arm.position.y = -0.35;
-    arm.castShadow = true;
+    const cuff = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.14, 0.14, 0.16, 12),
+        boyMaterials.purple
+    );
+    cuff.position.y = -0.65;
+    pivot.add(cuff);
 
-    pivot.add(arm);
+    const hand = new THREE.Mesh(
+        new THREE.SphereGeometry(0.12, 16, 12),
+        boyMaterials.skin
+    );
+    hand.position.y = -0.78;
+    pivot.add(hand);
 
     player.add(pivot);
     armPivots.push(pivot);
 }
 
-// Belt
-makePart(
-    new THREE.TorusGeometry(0.46, 0.06, 8, 24),
-    materials.gold,
-    0, 1.2, 0
-).rotation.x = Math.PI / 2;
+// PURPLE SHOULDER DETAILS
+for (const side of [-1, 1]) {
+    const shoulder = makePart(
+        new THREE.SphereGeometry(0.19, 16, 12),
+        boyMaterials.purple,
+        side * 0.48, 2.04, 0
+    );
+    shoulder.scale.set(1.1, 0.7, 0.9);
+}
 
-// Sword
+// ==========================================
+// DETAILED SILVER AND PURPLE SWORD
+// ==========================================
+
 const sword = new THREE.Group();
 
+// Silver blade
 const blade = new THREE.Mesh(
-    new THREE.BoxGeometry(0.13, 1.4, 0.07),
-    new THREE.MeshStandardMaterial({
-        color: "#d9e2ec",
-        metalness: 0.9,
-        roughness: 0.2
-    })
+    new THREE.BoxGeometry(0.14, 1.35, 0.055),
+    boyMaterials.silver
 );
-
-blade.position.y = 0.8;
+blade.position.y = 0.88;
 sword.add(blade);
 
-const handle = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.07, 0.07, 0.5, 8),
-    materials.bark
+// Purple line on blade
+const bladeLine = new THREE.Mesh(
+    new THREE.BoxGeometry(0.035, 1.1, 0.065),
+    boyMaterials.purple
 );
+bladeLine.position.set(0, 0.9, 0.035);
+sword.add(bladeLine);
 
+// Blade tip
+const tip = new THREE.Mesh(
+    new THREE.ConeGeometry(0.1, 0.25, 4),
+    boyMaterials.silver
+);
+tip.position.y = 1.68;
+sword.add(tip);
+
+// Sword handle
+const handle = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.065, 0.075, 0.48, 10),
+    boyMaterials.dark
+);
 handle.position.y = 0.05;
 sword.add(handle);
 
-const guard = new THREE.Mesh(
-    new THREE.BoxGeometry(0.55, 0.1, 0.12),
-    materials.gold
+// Purple handle grip
+const grip = new THREE.Mesh(
+    new THREE.TorusGeometry(0.075, 0.025, 8, 12),
+    boyMaterials.purple
 );
+grip.position.y = 0.05;
+sword.add(grip);
 
-guard.position.y = 0.25;
+// Crossguard
+const guard = new THREE.Mesh(
+    new THREE.BoxGeometry(0.55, 0.1, 0.14),
+    boyMaterials.gold
+);
+guard.position.y = 0.32;
 sword.add(guard);
 
-sword.position.set(0.75, 1.5, 0.1);
+// Purple gems on guard
+const gem = new THREE.Mesh(
+    new THREE.OctahedronGeometry(0.12),
+    boyMaterials.purple
+);
+gem.position.set(0, 0.32, 0.1);
+sword.add(gem);
+
+// Pommel
+const pommel = new THREE.Mesh(
+    new THREE.SphereGeometry(0.1, 12, 12),
+    boyMaterials.gold
+);
+pommel.position.y = -0.23;
+sword.add(pommel);
+
+// Position sword beside the boy's right hand
+sword.position.set(0.75, 1.15, 0.15);
+sword.rotation.z = -0.12;
 player.add(sword);
 
+// FINAL POSITION
 player.position.set(-250, 0, -320);
 scene.add(player);
 
