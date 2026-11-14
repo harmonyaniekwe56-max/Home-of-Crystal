@@ -1189,18 +1189,18 @@ function checkMonsterDefeat(monster) {
         monster.alive = false;
         scene.remove(monster.model);
 
+        // Restore 20 health, up to a maximum of 100
+        playerHealth = Math.min(100, playerHealth + 20);
+
+        updateHealth();
+
         showMessage(
-            monster.region.name + " guardian defeated! Find its chest."
+            monster.region.name +
+            " guardian defeated! +20 health. Find its chest."
         );
 
         updateBossDisplay();
     }
-// Restore health after defeating a monster
-playerHealth = Math.min(100, playerHealth + 20);
-
-updateHealth();
-
-showMessage("MONSTER DEFEATED! +20 HEALTH");
 }
 
 // ==========================================
