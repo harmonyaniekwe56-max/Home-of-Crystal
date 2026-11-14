@@ -415,7 +415,7 @@ sword.add(guard);
 sword.position.set(0.75, 1.5, 0.1);
 player.add(sword);
 
-player.position.set(-400, 0, -400);
+player.position.set(-250, 0, -320);
 scene.add(player);
 
 // ==========================================
