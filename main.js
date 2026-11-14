@@ -879,58 +879,89 @@ function createChest(region, index) {
     });
 }
 
-regions.forEach((region, index) => createChest(region, index));
-
-
- // ==========================================
- // 9. ZOMBIE MONSTERS
- // ==========================================
 
 const monsters = [];
 
 function createMonster(region, index) {
 
-    const monster = new THREE.Group();
+    const monsterGroup = new THREE.Group();
 
-    // Different clothes for each zombie
-    const clothingColors = [
-        "#65452f", // Brown
-        "#8d2929", // Red
-        "#244e83", // Blue
-        "#542b78", // Purple
-        "#455b37"  // Dark green
-    ];
+    monsterGroup.position.set(
+        region.x + 20,
+        0,
+        region.z - 8
+    );
 
-    const skinMaterial = new THREE.MeshStandardMaterial({
-        color: "#778477",
-        roughness: 1
-    });
+    scene.add(monsterGroup);
 
-    const clothMaterial = new THREE.MeshStandardMaterial({
-        color: clothingColors[index % clothingColors.length],
-        roughness: 1
-    });
+    const monster = {
+        model: monsterGroup,
+        region: region,
+        health: 20,
+        maxHealth: 20,
+        attackCooldown: 0,
+        alive: true,
+        index: index,
+        mixer: null
+    };
 
-    const darkMaterial = new THREE.MeshStandardMaterial({
-        color: "#252525",
-        roughness: 1
-    });
+    monsters.push(monster);
 
-    const hairMaterial = new THREE.MeshStandardMaterial({
-        color: "#292522",
-        roughness: 1
-    });
+    zombieLoader.load(
+        "./models/zombie.glb",
 
-    const eyeMaterial = new THREE.MeshStandardMaterial({
-        color: "#bd35ff",
-        emissive: "#8b00ff",
-        emissiveIntensity: 3
-    });
+        function(gltf) {
 
-    const clawMaterial = new THREE.MeshStandardMaterial({
-        color: "#35352f",
-        roughness: 0.9
-    });
+            const zombie = gltf.scene;
+
+            zombie.traverse(function(part) {
+                if (part.isMesh) {
+                    part.castShadow = true;
+                    part.receiveShadow = true;
+                }
+            });
+
+            // Adjust the zombie's height
+            const box = new THREE.Box3().setFromObject(zombie);
+            const height = box.max.y - box.min.y;
+
+            if (height > 0) {
+                const scale = 7 / height;
+                zombie.scale.setScalar(scale);
+                zombie.position.y = -box.min.y * scale;
+            }
+
+            monsterGroup.add(zombie);
+
+            // Load available animations
+            if (gltf.animations.length > 0) {
+
+                monster.mixer = new THREE.AnimationMixer(zombie);
+
+                const walkClip =
+                    gltf.animations.find(clip =>
+                        /walk|run/i.test(clip.name)
+                    ) || gltf.animations[0];
+
+                monster.mixer
+                    .clipAction(walkClip)
+                    .play();
+            }
+
+            console.log("Zombie loaded:", index);
+        },
+
+        undefined,
+
+        function(error) {
+            console.error("Zombie model failed to load:", error);
+        }
+    );
+}
+
+regions.forEach((region, index) => createMonster(region, index));
+
+regions.forEach((region, index) => createChest(region, index));
 
     function addPart(geometry, material, x, y, z) {
         const part = new THREE.Mesh(geometry, material);
