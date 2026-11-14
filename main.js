@@ -205,6 +205,102 @@ createPath(-250, -250, 0, 0);
 createPath(250, -250, 0, 0);
 createPath(-250, 250, 0, 0);
 createPath(250, 250, 0, 0);
+// BUILDING MATERIALS
+const woodMaterial = new THREE.MeshStandardMaterial({
+    color: 0x68452d,
+    roughness: 0.9
+});
+
+const roofMaterial = new THREE.MeshStandardMaterial({
+    color: 0x302638,
+    roughness: 0.9
+});
+
+const stoneMaterial = new THREE.MeshStandardMaterial({
+    color: 0x777777,
+    roughness: 1
+});
+
+// CREATE ABANDONED HOUSES
+function createHouse(x, z) {
+    const house = new THREE.Group();
+
+    // Walls
+    const walls = new THREE.Mesh(
+        new THREE.BoxGeometry(13, 9, 11),
+        woodMaterial
+    );
+    walls.position.y = 4.5;
+    walls.castShadow = true;
+    house.add(walls);
+
+    // Roof
+    const roof = new THREE.Mesh(
+        new THREE.ConeGeometry(10, 7, 4),
+        roofMaterial
+    );
+    roof.position.y = 12;
+    roof.rotation.y = Math.PI / 4;
+    roof.castShadow = true;
+    house.add(roof);
+
+    // Door
+    const door = new THREE.Mesh(
+        new THREE.BoxGeometry(2.5, 5, 0.3),
+        new THREE.MeshStandardMaterial({ color: 0x29190f })
+    );
+    door.position.set(0, 2.5, 5.6);
+    house.add(door);
+
+    house.position.set(x, 0, z);
+    scene.add(house);
+}
+
+// CREATE RUINED CASTLE
+function createCastle(x, z) {
+    const castle = new THREE.Group();
+
+    const mainBuilding = new THREE.Mesh(
+        new THREE.BoxGeometry(35, 24, 30),
+        stoneMaterial
+    );
+    mainBuilding.position.y = 12;
+    mainBuilding.castShadow = true;
+    castle.add(mainBuilding);
+
+    // Four castle towers
+    for (const dx of [-17, 17]) {
+        for (const dz of [-14, 14]) {
+            const tower = new THREE.Mesh(
+                new THREE.CylinderGeometry(5, 6, 32, 8),
+                stoneMaterial
+            );
+
+            tower.position.set(dx, 16, dz);
+            tower.castShadow = true;
+            castle.add(tower);
+
+            const top = new THREE.Mesh(
+                new THREE.ConeGeometry(6, 9, 8),
+                roofMaterial
+            );
+
+            top.position.set(dx, 36, dz);
+            castle.add(top);
+        }
+    }
+
+    castle.position.set(x, 0, z);
+    scene.add(castle);
+}
+
+// PLACE THE BUILDINGS
+createHouse(-120, -120);
+createHouse(120, -120);
+createHouse(-120, 120);
+createHouse(120, 120);
+
+createCastle(65, 55);
 // ==========================================
 // 6. TREES AND WORLD DECORATION
 // ==========================================
@@ -360,7 +456,8 @@ for (let i = 0; i < 100; i++) {
         -250 + (Math.random() - 0.5) * 140,
         -250 + (Math.random() - 0.5) * 140
     );
-}// ==========================================
+}
+// ==========================================
 // DECORATIVE GLOWING CRYSTALS
 // ==========================================
 
