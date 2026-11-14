@@ -1,1 +1,7 @@
 Zombie models will be stored in this folder.
+Home-of-Crystal/
+├── index.html
+├── main.js
+└── models/
+    ├── placeholder.txt
+    └── your-zombie-file.glb
