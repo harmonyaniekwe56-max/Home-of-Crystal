@@ -504,7 +504,7 @@ for (let i = 0; i < 35; i++) {
 // ==========================================
 
 const player = new THREE.Group();
-
+const legPivots = [];
 // Character materials
 const boyMaterials = {
     skin: new THREE.MeshStandardMaterial({
