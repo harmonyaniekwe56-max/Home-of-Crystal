@@ -1270,44 +1270,167 @@ function checkMonsterDefeat(monster) {
 // 13. MONSTER ATTACKS
 // ==========================================
 
+
 function updateMonsters(delta) {
 
     monsters.forEach(monster => {
 
         if (!monster.alive || gameOver) return;
 
-        const dx = player.position.x - monster.model.position.x;
-        const dz = player.position.z - monster.model.position.z;
+        const model = monster.model;
 
-        const distance = Math.sqrt(dx * dx + dz * dz);
+        let dx = player.position.x - model.position.x;
+        let dz = player.position.z - model.position.z;
 
-        // Chase player
-        if (distance < 65 && distance > 4) {
+        let distance = Math.sqrt(dx * dx + dz * dz);
 
-            monster.model.position.x +=
-                (dx / distance) * 8 * delta;
-
-            monster.model.position.z +=
-                (dz / distance) * 8 * delta;
-
-            monster.model.rotation.y = Math.atan2(dx, dz);
-        }
-
-        // Attack player
         monster.attackCooldown -= delta;
 
-        if (distance < 5 && monster.attackCooldown <= 0) {
+        // Walking animation timer
+        monster.walkTime = (monster.walkTime || 0) + delta;
 
-            playerHealth -= 8;
+        // =================================
+        // CHASE THE BOY
+        // =================================
+
+        const chasing = distance < 65 && distance > 3.8;
+
+        if (chasing) {
+
+            const speed = 8 * delta;
+
+            model.position.x += (dx / distance) * speed;
+            model.position.z += (dz / distance) * speed;
+
+            model.rotation.y = Math.atan2(dx, dz);
+
+            // Walking arms
+            monster.armPivots.forEach((arm, i) => {
+                arm.rotation.x =
+                    Math.sin(monster.walkTime * 7 + i * Math.PI) * 0.45;
+            });
+
+            // Walking legs
+            monster.legPivots.forEach((leg, i) => {
+                leg.rotation.x =
+                    Math.sin(monster.walkTime * 7 + i * Math.PI) * 0.55;
+            });
+
+        } else {
+
+            // Return arms and legs to resting position
+            monster.armPivots.forEach(arm => {
+                if (!monster.isAttacking) {
+                    arm.rotation.x = THREE.MathUtils.lerp(
+                        arm.rotation.x, 0, 0.12
+                    );
+                }
+            });
+
+            monster.legPivots.forEach(leg => {
+                leg.rotation.x = THREE.MathUtils.lerp(
+                    leg.rotation.x, 0, 0.12
+                );
+            });
+        }
+
+        // Recalculate distance after movement
+        dx = player.position.x - model.position.x;
+        dz = player.position.z - model.position.z;
+        distance = Math.sqrt(dx * dx + dz * dz);
+
+        // =================================
+        // START ZOMBIE ATTACK
+        // =================================
+
+        if (
+            distance < 4.5 &&
+            monster.attackCooldown <= 0 &&
+            !monster.isAttacking
+        ) {
+
+            monster.isAttacking = true;
+            monster.attackElapsed = 0;
+            monster.attackHit = false;
 
             monster.attackCooldown = 1.1;
+        }
 
-            updateHealth();
+        // =================================
+        // ATTACK ANIMATION
+        // =================================
 
-            showMessage("A GUARDIAN HIT YOU!");
+        if (monster.isAttacking) {
 
-            if (playerHealth <= 0) {
-                finishGame(false);
+            monster.attackElapsed += delta;
+
+            const progress = Math.min(
+                monster.attackElapsed / 0.65,
+                1
+            );
+
+            // Both arms swing forward
+            const swing = Math.sin(progress * Math.PI) * 1.6;
+
+            monster.armPivots[0].rotation.x = -swing;
+            monster.armPivots[1].rotation.x = -swing;
+
+            // Slight body movement during attack
+            model.rotation.x = -Math.sin(progress * Math.PI) * 0.12;
+
+            // =================================
+            // DAMAGE WHEN THE ATTACK CONNECTS
+            // =================================
+
+            if (
+                monster.attackElapsed >= 0.24 &&
+                !monster.attackHit
+            ) {
+
+                monster.attackHit = true;
+
+                // Check that the boy is still close
+                const hitDx = player.position.x - model.position.x;
+                const hitDz = player.position.z - model.position.z;
+
+                const hitDistance = Math.sqrt(
+                    hitDx * hitDx + hitDz * hitDz
+                );
+
+                if (hitDistance < 4.8) {
+
+                    // Damage the boy
+                    playerHealth = Math.max(0, playerHealth - 8);
+
+                    // Push the boy slightly backwards
+                    if (hitDistance > 0.01) {
+                        player.position.x +=
+                            (hitDx / hitDistance) * 0.7;
+
+                        player.position.z +=
+                            (hitDz / hitDistance) * 0.7;
+                    }
+
+                    updateHealth();
+
+                    showMessage("A ZOMBIE HIT YOU!");
+
+                    if (playerHealth <= 0) {
+                        finishGame(false);
+                    }
+                }
+            }
+
+            // Finish attack animation
+            if (monster.attackElapsed >= 0.65) {
+
+                monster.isAttacking = false;
+
+                monster.armPivots.forEach(arm => {
+                    arm.rotation.x = 0;
+                });
+
+                model.rotation.x = 0;
             }
         }
     });
