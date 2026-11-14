@@ -698,7 +698,6 @@ for (const side of [-1, 1]) {
     pivot.add(bootBand);
 
     player.add(pivot);
-    legPivots.push(pivot);
 }
 
 
