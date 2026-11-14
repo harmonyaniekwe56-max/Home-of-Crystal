@@ -1298,6 +1298,12 @@ function checkMonsterDefeat(monster) {
 
         updateBossDisplay();
     }
+// Restore health after defeating a monster
+playerHealth = Math.min(100, playerHealth + 20);
+
+updateHealth();
+
+showMessage("MONSTER DEFEATED! +20 HEALTH");
 }
 
 // ==========================================
