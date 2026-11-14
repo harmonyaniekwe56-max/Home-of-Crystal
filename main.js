@@ -4,7 +4,7 @@ const zombieLoader = new GLTFLoader();
 const zombieMixers = [];
 
 // ==========================================
-// 1. BASIC GAME SETTINGS
+// 1. BASIC GAME SETTINGS 
 // ==========================================
 
 const canvas = document.getElementById("gameCanvas");
