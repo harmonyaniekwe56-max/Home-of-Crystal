@@ -702,48 +702,6 @@ for (const side of [-1, 1]) {
     legPivots.push(pivot);
 }
 
-// ARMS
-const armPivots = [];
-
-for (const side of [-1, 1]) {
-    const pivot = new THREE.Group();
-    pivot.position.set(side * 0.48, 2.05, 0);
-
-    const sleeve = new THREE.Mesh(
-        new THREE.CapsuleGeometry(0.15, 0.53, 8, 12),
-        boyMaterials.coat
-    );
-    sleeve.position.y = -0.34;
-    sleeve.castShadow = true;
-    pivot.add(sleeve);
-
-    const cuff = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.14, 0.14, 0.16, 12),
-        boyMaterials.purple
-    );
-    cuff.position.y = -0.65;
-    pivot.add(cuff);
-
-    const hand = new THREE.Mesh(
-        new THREE.SphereGeometry(0.12, 16, 12),
-        boyMaterials.skin
-    );
-    hand.position.y = -0.78;
-    pivot.add(hand);
-
-    player.add(pivot);
-    armPivots.push(pivot);
-}
-
-// PURPLE SHOULDER DETAILS
-for (const side of [-1, 1]) {
-    const shoulder = makePart(
-        new THREE.SphereGeometry(0.19, 16, 12),
-        boyMaterials.purple,
-        side * 0.48, 2.04, 0
-    );
-    shoulder.scale.set(1.1, 0.7, 0.9);
-}
 
 // ==========================================
 // DETAILED SILVER AND PURPLE SWORD
