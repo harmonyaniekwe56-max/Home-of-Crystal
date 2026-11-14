@@ -1005,7 +1005,6 @@ regions.forEach((region, index) => createChest(region, index));
     );
 
     // ARMS WITH MOVABLE PIVOTS
-    const armPivots = [];
 
     for (const side of [-1, 1]) {
 
