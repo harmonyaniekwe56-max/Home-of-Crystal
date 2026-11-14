@@ -1061,7 +1061,6 @@ regions.forEach((region, index) => createChest(region, index));
     }
 
     // LEGS WITH MOVABLE PIVOTS
-    const legPivots = [];
 
     for (const side of [-1, 1]) {
 
