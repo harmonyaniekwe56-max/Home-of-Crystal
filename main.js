@@ -667,7 +667,6 @@ makePart(
 );
 
 // LEGS
-const legPivots = [];
 
 for (const side of [-1, 1]) {
     const pivot = new THREE.Group();
