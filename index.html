@@ -1,77 +1,229 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" href="data:,">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home of Crystal - 3D Adventure</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home of Crystal</title>
+  <link rel="icon" href="data:,">
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        body {
-            overflow: hidden;
-            background: #101827;
-            font-family: Georgia, serif;
-        }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #10151b;
+      font-family: Georgia, serif;
+      color: white;
+    }
 
-        #gameCanvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-        }
+    #gameCanvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
 
-        .game-info {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            z-index: 2;
-            display: flex;
-            justify-content: space-between;
-            color: #F3D78B;
-            text-shadow: 0 2px 8px black;
-            pointer-events: none;
-        }
+    #hud {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 5;
+      width: 240px;
+      padding: 14px;
+      background: rgba(12, 17, 25, 0.82);
+      border: 1px solid #9c78c9;
+      border-radius: 12px;
+    }
 
-        h1 {
-            font-size: clamp(17px, 3vw, 27px);
-        }
+    #gameTitle {
+      color: #d7b5ff;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
 
-        .instructions {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            color: white;
-            background: #241638BB;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 13px;
-        }
-    </style>
+    .bar {
+      height: 12px;
+      background: #393939;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 6px 0 12px;
+    }
+
+    #healthFill {
+      height: 100%;
+      width: 100%;
+      background: #d74455;
+      transition: width 0.2s;
+    }
+
+    #bossFill {
+      height: 100%;
+      width: 100%;
+      background: #a34ce0;
+      transition: width 0.2s;
+    }
+
+    #regionName {
+      color: #e4ceff;
+      font-size: 15px;
+      margin-top: 10px;
+    }
+
+    #crystalCount {
+      margin-top: 8px;
+      color: #e7ceff;
+    }
+
+    #controls {
+      position: fixed;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      background: rgba(10, 13, 20, 0.85);
+      padding: 10px 16px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.8;
+      width: min(95%, 520px);
+    }
+
+    #message {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      background: rgba(18, 13, 29, 0.92);
+      border: 1px solid #b98af0;
+      border-radius: 10px;
+      padding: 12px 20px;
+      text-align: center;
+      display: none;
+      max-width: 90%;
+    }
+
+    #puzzlePanel,
+    #endScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.82);
+      padding: 20px;
+    }
+
+    .panel {
+      width: min(100%, 430px);
+      background: #171322;
+      border: 1px solid #b88ce9;
+      border-radius: 16px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 0 35px rgba(150, 80, 220, 0.25);
+    }
+
+    .panel h1 {
+      color: #d8b8ff;
+    }
+
+    .panel input {
+      width: 100%;
+      padding: 13px;
+      margin: 12px 0;
+      background: #292333;
+      border: 1px solid #9b7ac0;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      background: #8754b8;
+      color: white;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:hover {
+      background: #a875d9;
+    }
+
+    #puzzleFeedback {
+      min-height: 25px;
+      color: #f0c4ff;
+    }
+
+    #endScreen h1 {
+      font-size: 38px;
+    }
+
+    #endScreen p {
+      line-height: 1.7;
+    }
+  </style>
 </head>
 
 <body>
 
-    <div class="game-info">
-        <h1>💎 HOME OF CRYSTAL</h1>
-        <h3>Crystals: <span id="score">0</span></h3>
+  <canvas id="gameCanvas"></canvas>
+
+  <div id="hud">
+    <div id="gameTitle">HOME OF CRYSTAL</div>
+
+    <div>Health</div>
+    <div class="bar">
+      <div id="healthFill"></div>
     </div>
 
-    <canvas id="gameCanvas"></canvas>
-
-    <div class="instructions">
-        WASD / Arrow Keys: Move<br>
-        Explore the enchanted forest!
+    <div id="bossName">No guardian nearby</div>
+    <div class="bar">
+      <div id="bossFill"></div>
     </div>
 
-    <script type="module" src="./main.js"></script>
+    <div id="regionName">The Great Wilderness</div>
+    <div id="crystalCount">Crystals: 0 / 5</div>
+  </div>
+
+  <div id="message"></div>
+
+  <div id="controls">
+    WASD / Arrow Keys: Move |
+    SHIFT: Run<br>
+    SPACE: Sword Attack |
+    Q: Sonic Power |
+    E: Open Chest
+  </div>
+
+  <div id="puzzlePanel">
+    <div class="panel">
+      <h1>THE CRYSTAL RIDDLE</h1>
+      <p id="puzzleQuestion"></p>
+      <input id="puzzleAnswer" placeholder="Enter your answer">
+      <button id="submitAnswer">Unlock Chest</button>
+      <button id="closePuzzle">Close</button>
+      <p id="puzzleFeedback"></p>
+    </div>
+  </div>
+
+  <div id="endScreen">
+    <div class="panel">
+      <h1 id="endTitle">GAME OVER</h1>
+      <p id="endText"></p>
+      <button onclick="location.reload()">Restart Adventure</button>
+    </div>
+  </div>
+
+  <script type="module" src="./main.js"></script>
 
 </body>
 </html>
-
