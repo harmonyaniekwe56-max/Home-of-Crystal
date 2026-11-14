@@ -270,6 +270,102 @@ for (let i = 0; i < 22; i++) {
         250 + (Math.random() - 0.5) * 150
     );
 }
+// ==========================================
+// FLOWERS AND FOREST DECORATION
+// ==========================================
+
+function createFlower(x, z) {
+
+    const flower = new THREE.Group();
+
+    const stem = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.06, 0.08, 1, 6),
+        new THREE.MeshStandardMaterial({ color: "#328443" })
+    );
+
+    stem.position.y = 0.5;
+    flower.add(stem);
+
+    const colors = ["#ffb5d5", "#fff0a6", "#bca0ff", "#ffffff"];
+
+    const petalMaterial = new THREE.MeshStandardMaterial({
+        color: colors[Math.floor(Math.random() * colors.length)]
+    });
+
+    for (let i = 0; i < 5; i++) {
+
+        const angle = i * Math.PI * 2 / 5;
+
+        const petal = new THREE.Mesh(
+            new THREE.SphereGeometry(0.18, 8, 8),
+            petalMaterial
+        );
+
+        petal.position.set(
+            Math.cos(angle) * 0.22,
+            1.05,
+            Math.sin(angle) * 0.22
+        );
+
+        flower.add(petal);
+    }
+
+    const centre = new THREE.Mesh(
+        new THREE.SphereGeometry(0.12, 8, 8),
+        materials.gold
+    );
+
+    centre.position.y = 1.05;
+    flower.add(centre);
+
+    flower.position.set(x, 0, z);
+    scene.add(flower);
+}
+
+// Scatter flowers through the forest
+for (let i = 0; i < 100; i++) {
+
+    createFlower(
+        -250 + (Math.random() - 0.5) * 140,
+        -250 + (Math.random() - 0.5) * 140
+    );
+}// ==========================================
+// DECORATIVE GLOWING CRYSTALS
+// ==========================================
+
+function createCrystalDecoration(x, z, size) {
+
+    const crystal = new THREE.Mesh(
+        new THREE.OctahedronGeometry(size),
+        new THREE.MeshStandardMaterial({
+            color: "#bd80ff",
+            emissive: "#812cff",
+            emissiveIntensity: 2,
+            metalness: 0.5,
+            roughness: 0.2
+        })
+    );
+
+    crystal.position.set(x, size, z);
+    crystal.castShadow = true;
+
+    scene.add(crystal);
+
+    const light = new THREE.PointLight("#a65cff", 2, 18);
+    light.position.set(x, size + 2, z);
+
+    scene.add(light);
+}
+
+// Crystal Caverns decoration
+for (let i = 0; i < 35; i++) {
+
+    createCrystalDecoration(
+        250 + (Math.random() - 0.5) * 130,
+        250 + (Math.random() - 0.5) * 130,
+        1.5 + Math.random() * 2
+    );
+}
 
 // ==========================================
 // 7. CREATE THE BOY
