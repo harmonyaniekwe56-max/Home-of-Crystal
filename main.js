@@ -878,9 +878,10 @@ function createChest(region, index) {
 
 regions.forEach((region, index) => createChest(region, index));
 
-// ==========================================
-// 9. MONSTERS
-// ==========================================
+
+ // ==========================================
+ // 9. ZOMBIE MONSTERS
+ // ==========================================
 
 const monsters = [];
 
@@ -888,95 +889,230 @@ function createMonster(region, index) {
 
     const monster = new THREE.Group();
 
-    const bodyMaterial = new THREE.MeshStandardMaterial({
-        color: index === 1 ? "#638ba2" : "#39463b",
-        roughness: 0.8
+    // Different clothes for each zombie
+    const clothingColors = [
+        "#65452f", // Brown
+        "#8d2929", // Red
+        "#244e83", // Blue
+        "#542b78", // Purple
+        "#455b37"  // Dark green
+    ];
+
+    const skinMaterial = new THREE.MeshStandardMaterial({
+        color: "#778477",
+        roughness: 1
     });
 
-    const body = new THREE.Mesh(
-        new THREE.CapsuleGeometry(2.3, 3.8, 8, 16),
-        bodyMaterial
-    );
+    const clothMaterial = new THREE.MeshStandardMaterial({
+        color: clothingColors[index % clothingColors.length],
+        roughness: 1
+    });
 
-    body.position.y = 4;
-    body.castShadow = true;
+    const darkMaterial = new THREE.MeshStandardMaterial({
+        color: "#252525",
+        roughness: 1
+    });
 
-    monster.add(body);
+    const hairMaterial = new THREE.MeshStandardMaterial({
+        color: "#292522",
+        roughness: 1
+    });
 
-    const head = new THREE.Mesh(
-        new THREE.SphereGeometry(2, 20, 16),
-        bodyMaterial
-    );
-
-    head.position.y = 7.5;
-    head.castShadow = true;
-
-    monster.add(head);
-
-    // Glowing eyes
     const eyeMaterial = new THREE.MeshStandardMaterial({
-        color: "#ff2020",
-        emissive: "#ff0000",
+        color: "#bd35ff",
+        emissive: "#8b00ff",
         emissiveIntensity: 3
     });
 
-    for (const side of [-1, 1]) {
+    const clawMaterial = new THREE.MeshStandardMaterial({
+        color: "#35352f",
+        roughness: 0.9
+    });
 
-        const eye = new THREE.Mesh(
-            new THREE.SphereGeometry(0.35, 12, 12),
-            eyeMaterial
-        );
-
-        eye.position.set(side * 0.8, 7.7, 1.65);
-        monster.add(eye);
+    function addPart(geometry, material, x, y, z) {
+        const part = new THREE.Mesh(geometry, material);
+        part.position.set(x, y, z);
+        part.castShadow = true;
+        part.receiveShadow = true;
+        monster.add(part);
+        return part;
     }
 
-    // Horns
-    for (const side of [-1, 1]) {
+    // BODY
+    addPart(
+        new THREE.CapsuleGeometry(0.48, 0.85, 8, 12),
+        skinMaterial,
+        0, 1.85, 0
+    );
 
-        const horn = new THREE.Mesh(
-            new THREE.ConeGeometry(0.55, 2.4, 8),
-            materials.stone
+    // TORN SHIRT
+    addPart(
+        new THREE.BoxGeometry(0.95, 1.15, 0.55),
+        clothMaterial,
+        0, 1.95, 0.02
+    );
+
+    // Uneven torn shirt pieces
+    for (let i = 0; i < 3; i++) {
+        const tear = addPart(
+            new THREE.BoxGeometry(0.16, 0.3, 0.57),
+            darkMaterial,
+            (i - 1) * 0.3,
+            1.35 + (i % 2) * 0.12,
+            0.02
         );
-
-        horn.position.set(side * 1.25, 9.3, 0);
-        horn.rotation.z = side * -0.3;
-        horn.castShadow = true;
-
-        monster.add(horn);
+        tear.rotation.z = (i - 1) * 0.15;
     }
 
-    // Long arms
+    // NECK
+    addPart(
+        new THREE.CylinderGeometry(0.14, 0.17, 0.3, 10),
+        skinMaterial,
+        0, 2.58, 0
+    );
+
+    // HEAD
+    addPart(
+        new THREE.SphereGeometry(0.43, 20, 16),
+        skinMaterial,
+        0, 3.05, 0
+    );
+
+    // MESSY HAIR
+    addPart(
+        new THREE.SphereGeometry(0.44, 16, 12),
+        hairMaterial,
+        0, 3.35, -0.08
+    );
+
+    for (let i = 0; i < 5; i++) {
+        const strand = addPart(
+            new THREE.ConeGeometry(0.12, 0.38, 6),
+            hairMaterial,
+            (i - 2) * 0.14,
+            3.45,
+            0.08
+        );
+        strand.rotation.z = (i - 2) * 0.3;
+    }
+
+    // GLOWING EYES
     for (const side of [-1, 1]) {
+        addPart(
+            new THREE.SphereGeometry(0.075, 12, 12),
+            eyeMaterial,
+            side * 0.16, 3.1, 0.38
+        );
+    }
+
+    // MOUTH
+    addPart(
+        new THREE.BoxGeometry(0.3, 0.1, 0.06),
+        darkMaterial,
+        0, 2.83, 0.4
+    );
+
+    // ARMS WITH MOVABLE PIVOTS
+    const armPivots = [];
+
+    for (const side of [-1, 1]) {
+
+        const pivot = new THREE.Group();
+        pivot.position.set(side * 0.55, 2.4, 0);
 
         const arm = new THREE.Mesh(
-            new THREE.CapsuleGeometry(0.65, 2.4, 6, 12),
-            bodyMaterial
+            new THREE.CapsuleGeometry(0.17, 0.75, 6, 10),
+            skinMaterial
         );
 
-        arm.position.set(side * 2.5, 3.6, 0);
-        arm.rotation.z = side * -0.25;
+        arm.position.y = -0.43;
+        arm.rotation.z = side * -0.12;
         arm.castShadow = true;
+        pivot.add(arm);
 
-        monster.add(arm);
+        // Torn sleeve
+        const sleeve = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.2, 0.17, 0.38, 8),
+            clothMaterial
+        );
+
+        sleeve.position.y = -0.17;
+        pivot.add(sleeve);
+
+        // Zombie hand
+        const hand = new THREE.Mesh(
+            new THREE.SphereGeometry(0.18, 12, 10),
+            skinMaterial
+        );
+
+        hand.position.y = -0.92;
+        pivot.add(hand);
+
+        // Three long claws
+        for (let i = 0; i < 3; i++) {
+            const claw = new THREE.Mesh(
+                new THREE.ConeGeometry(0.045, 0.25, 6),
+                clawMaterial
+            );
+
+            claw.position.set(
+                (i - 1) * 0.11,
+                -1.1,
+                0.04
+            );
+
+            claw.rotation.x = Math.PI;
+            pivot.add(claw);
+        }
+
+        monster.add(pivot);
+        armPivots.push(pivot);
     }
 
-    // Legs
+    // LEGS WITH MOVABLE PIVOTS
+    const legPivots = [];
+
     for (const side of [-1, 1]) {
 
+        const pivot = new THREE.Group();
+        pivot.position.set(side * 0.23, 1.05, 0);
+
         const leg = new THREE.Mesh(
-            new THREE.CapsuleGeometry(0.75, 2, 6, 12),
-            bodyMaterial
+            new THREE.CapsuleGeometry(0.2, 0.65, 6, 10),
+            skinMaterial
         );
 
-        leg.position.set(side * 1, 0.9, 0);
+        leg.position.y = -0.38;
         leg.castShadow = true;
+        pivot.add(leg);
 
-        monster.add(leg);
+        // Torn trousers
+        const trousers = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.2, 0.19, 0.42, 8),
+            clothMaterial
+        );
+
+        trousers.position.y = -0.12;
+        pivot.add(trousers);
+
+        // Feet
+        const foot = new THREE.Mesh(
+            new THREE.BoxGeometry(0.3, 0.18, 0.42),
+            darkMaterial
+        );
+
+        foot.position.set(0, -0.78, 0.08);
+        pivot.add(foot);
+
+        monster.add(pivot);
+        legPivots.push(pivot);
     }
 
+    // POSITION AND SIZE
     monster.position.set(region.x + 20, 0, region.z - 8);
     monster.scale.setScalar(1.15);
+
+    monster.lookAt(player.position.x, 0, player.position.z);
 
     scene.add(monster);
 
@@ -987,11 +1123,18 @@ function createMonster(region, index) {
         maxHealth: 20,
         attackCooldown: 0,
         alive: true,
-        index
+        index,
+
+        // New animation parts
+        armPivots,
+        legPivots,
+        isAttacking: false,
+        attackAnimation: 0
     });
 }
 
 regions.forEach((region, index) => createMonster(region, index));
+
 
 // ==========================================
 // 10. SONIC POWER
