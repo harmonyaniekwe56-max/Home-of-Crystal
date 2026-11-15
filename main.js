@@ -1465,8 +1465,10 @@ function animate() {
 
             const swing = Math.sin(performance.now() * 0.012) * 0.6;
 
-            legPivots[0].rotation.x = swing;
-            legPivots[1].rotation.x = -swing;
+            if (legPivots.length >= 2) {
+    legPivots[0].rotation.x = swing;
+    legPivots[1].rotation.x = -swing;
+}
 
         } else {
 
