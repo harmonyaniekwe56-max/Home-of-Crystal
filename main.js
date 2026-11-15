@@ -1450,6 +1450,7 @@ function showMessage(text) {
 
 const clock = new THREE.Clock();
 
+
 function animate() {
 
     requestAnimationFrame(animate);
@@ -1466,11 +1467,14 @@ function animate() {
 
             legPivots[0].rotation.x = swing;
             legPivots[1].rotation.x = -swing;
-            // Arm animation will be added later.
+
         } else {
 
-            legPivots.forEach(leg => leg.rotation.x *= 0.8);
-// No arm animation yet.        }
+            legPivots.forEach(leg => {
+                leg.rotation.x *= 0.8;
+            });
+
+        }
 
         if (swordSwing > 0) {
             sword.rotation.z = -0.9;
@@ -1496,6 +1500,7 @@ function animate() {
 
     renderer.render(scene, camera);
 }
+
 
 // ==========================================
 // 24. SCREEN RESIZING
