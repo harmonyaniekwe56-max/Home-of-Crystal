@@ -1466,14 +1466,11 @@ function animate() {
 
             legPivots[0].rotation.x = swing;
             legPivots[1].rotation.x = -swing;
-
-            armPivots[0].rotation.x = -swing;
-            armPivots[1].rotation.x = swing;
+            // Arm animation will be added later.
         } else {
 
             legPivots.forEach(leg => leg.rotation.x *= 0.8);
-            armPivots.forEach(arm => arm.rotation.x *= 0.8);
-        }
+// No arm animation yet.        }
 
         if (swordSwing > 0) {
             sword.rotation.z = -0.9;
