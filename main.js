@@ -697,9 +697,9 @@ for (const side of [-1, 1]) {
     bootBand.position.set(0, -0.62, 0.1);
     pivot.add(bootBand);
 
-    player.add(pivot);
+        player.add(pivot);
+    legPivots.push(pivot);
 }
-
 
 // ==========================================
 // DETAILED SILVER AND PURPLE SWORD
