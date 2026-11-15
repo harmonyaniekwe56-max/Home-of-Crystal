@@ -864,7 +864,7 @@ function createMonster(region, index) {
     monsters.push(monster);
 
     zombieLoader.load(
-        "./models/zombie.glb",
+        "./zombie.glb",
 
         function(gltf) {
 
